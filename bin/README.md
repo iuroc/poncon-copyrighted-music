@@ -33,7 +33,7 @@
       - 参数说明：将 `page` 从 1 加到 11，采集后分别保存到 `1.txt` 到 `11.txt` 中
       - Header
   
-        ```http
+        ```
         Content-type: application/x-www-form-urlencoded
         authorization: 身份令牌
         ```
