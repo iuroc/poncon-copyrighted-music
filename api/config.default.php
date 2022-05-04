@@ -12,7 +12,10 @@ $config = array(
         'password' => '',
         'database' => ''
     ),
-    'download_url_update_duration' => 5 * 60 * 60 // 下载链接有效期 (s)
+    'download_url_update_duration' => 5 * 60 * 60, // 下载链接有效期 (s)
+    '123pan' => array(
+        'authorization' => '' // 123云盘的身份令牌
+    )
 );
 
 function defaultGetData($key, $value)
