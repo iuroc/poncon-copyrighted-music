@@ -5,8 +5,9 @@
  * 把云盘列表数据和原站采集的数据合并后插入到数据表中
  */
 
-$conn = mysqli_connect('localhost', '', '', '');
-
+$config = json_decode(file_get_contents('./config.json'), true);
+$mysql = $config['mysql'];
+$conn = mysqli_connect($mysql['host'], $mysql['username'], $mysql['password'], $mysql['database']);
 $fromData = json_decode(file_get_contents('./data.good.min.json'), true);
 
 $createTB_sql = "CREATE TABLE IF NOT EXISTS `copyrighted_music` (" .
