@@ -1,5 +1,5 @@
 # 后端数据更新程序目录
-bin/
+bin/config.json
 
 # 配置文件
 api/config.php
