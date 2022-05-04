@@ -11,7 +11,8 @@ $config = array(
         'username' => '',
         'password' => '',
         'database' => ''
-    )
+    ),
+    'download_url_update_duration' => 5 * 60 * 60 // 下载链接有效期 (s)
 );
 
 function defaultGetData($key, $value)
