@@ -4,7 +4,7 @@
  * 
  * 配置文件
  */
-
+header('Content-type: application/json');
 $config = array(
     'mysql' => array(
         'host' => '',
