@@ -23,13 +23,14 @@ $createTB_sql = "CREATE TABLE IF NOT EXISTS `copyrighted_music` (" .
     "`downloadUrl` TEXT comment \"下载链接\"," .
     "`musicType` TEXT comment \"音乐类型\"," .
     "`url_update_time` INT(10) comment \"链接更新时间\"," .
+    "`like_num` INT(10) comment \"喜欢人数\"," .
     "PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 mysqli_query($conn, $createTB_sql);
 
 
 for ($x = 0; $x < count($fromData); $x++) {
     $item = $fromData[$x];
-    $insert_sql = "INSERT INTO `copyrighted_music` (`fileName`, `size`, `fileId`, `etag`, `s3keyFlag`, `type`, `msg`, `time`, `downloadUrl`, `musicType`, `url_update_time`)" .
-        "VALUES ('"  . addslashes($item['fileName']) .  "', '"  . addslashes($item['size']) .  "', '"  . addslashes($item['fileId']) .  "', '"  . addslashes($item['etag']) .  "', '"  . addslashes($item['s3keyFlag']) .  "', '"  . addslashes($item['type']) .  "', '"  . addslashes($item['msg']) .  "', '"  . addslashes($item['time']) .  "', '"  . addslashes($item['downloadUrl']) .  "', '"  . addslashes($item['musicType']) . "', "  . time() .  ")";
+    $insert_sql = "INSERT INTO `copyrighted_music` (`fileName`, `size`, `fileId`, `etag`, `s3keyFlag`, `type`, `msg`, `time`, `downloadUrl`, `musicType`, `url_update_time`, `like_num`)" .
+        "VALUES ('"  . addslashes($item['fileName']) .  "', '"  . addslashes($item['size']) .  "', '"  . addslashes($item['fileId']) .  "', '"  . addslashes($item['etag']) .  "', '"  . addslashes($item['s3keyFlag']) .  "', '"  . addslashes($item['type']) .  "', '"  . addslashes($item['msg']) .  "', '"  . addslashes($item['time']) .  "', '"  . addslashes($item['downloadUrl']) .  "', '"  . addslashes($item['musicType']) . "', "  . time() .  ", 0)";
     mysqli_query($conn, $insert_sql);
 }
