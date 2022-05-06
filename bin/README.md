@@ -148,3 +148,20 @@
     "time": ""
 }
 ```
+
+### `types.json` -- 音乐分类名称列表
+
+```json
+[
+    "Other",
+    "Electronic",
+    "Misc",
+    "Romantic",
+    "Percussion / Underscoring",
+    "epic",
+    "upbeat",
+    "Horror",
+    "Comedy",
+    "World Music"
+]
+```
