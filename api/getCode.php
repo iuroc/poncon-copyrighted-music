@@ -18,7 +18,7 @@ include './sendCode.php';
 $email = defaultGetData('email', '');
 if (!$email) {
     die(json_encode(array(
-        'code' => 999,
+        'code' => 900,
         'msg' => '参数缺失'
     )));
 }
@@ -41,7 +41,7 @@ $result = mysqli_query($conn, "SELECT * FROM `copyrighted_music_user` WHERE `ema
 if (mysqli_num_rows($result)) {
     // 已经被注册了
     die(json_encode(array(
-        'code' => 996,
+        'code' => 904,
         'msg' => '邮箱已被注册'
     )));
 }
@@ -56,7 +56,7 @@ if (!mysqli_num_rows($result)) {
     $status = sendCode($config, $email, '无忧音乐网的验证码', $content);
     if (!$status) {
         die(json_encode(array(
-            'code' => 998,
+            'code' => 908,
             'msg' => '验证码发送失败'
         )));
     }
@@ -77,7 +77,7 @@ if (!mysqli_num_rows($result)) {
             $status = sendCode($config, $email, '无忧音乐网的验证码', $content);
             if (!$status) {
                 die(json_encode(array(
-                    'code' => 998,
+                    'code' => 908,
                     'msg' => '验证码发送失败'
                 )));
             }
@@ -92,7 +92,7 @@ if (!mysqli_num_rows($result)) {
             }
         } else {
             echo json_encode(array(
-                'code' => 997,
+                'code' => 909,
                 'msg' => '发送频率过快，请' . (60 - (time() - $create_time)) . '秒后重试'
             ));
         }
