@@ -55,7 +55,7 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     break;
 }
 
-$result = mysqli_query($conn, "INSERT INTO `copyrighted_music_user` (`username`, `password`, `email`, `register_time`, `used_capacity`, `total_capacity`) VALUES ('$username', '$password', '$email', '$register_time', '0', '524288000')");
+$result = mysqli_query($conn, "INSERT INTO `copyrighted_music_user` (`username`, `password`, `email`, `register_time`) VALUES ('$username', '$password', '$email', '$register_time')");
 if (!$result) {
     die(json_encode(array(
         'code' => 903,

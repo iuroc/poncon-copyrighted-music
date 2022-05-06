@@ -12,6 +12,13 @@ $conn = mysqli_connect(
     $config['mysql']['database']
 );
 
+if (!$conn) {
+    die(json_encode(array(
+        'code' => 903,
+        'msg' => '数据库连接失败'
+    )));
+}
+
 // 空间大小以KB为单位，用户不分等级，容量越买越多
 $sql_createDB = "CREATE TABLE IF NOT EXISTS `copyrighted_music_user` (" .
     "`id` int(10) NOT NULL AUTO_INCREMENT," .
