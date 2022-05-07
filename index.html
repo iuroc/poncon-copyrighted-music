@@ -216,7 +216,7 @@
                 <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11 mx-auto">
                     <h3 class="mb-4 text-center title">音乐搜索</h3>
                     <div class="input-group mb-4">
-                        <input type="search" class="form-control keyword" autocomplete="new-password"
+                        <input type="search" class="form-control keyword border-mainColor" autocomplete="new-password"
                             placeholder="请输入搜索关键词">
                         <div class="input-group-append">
                             <button class="btn btn-mainColor search">搜索</button>
@@ -224,8 +224,16 @@
                     </div>
                 </div>
             </div>
-            <div class="row musicList">
-                
+            <div class="row musicList"></div>
+            <div class="loading mt-4 mb-3 text-center" style="height: 50px; display: none;">
+                <div class="spinner-border text-mainColor" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="loadMore mt-4 row mb-3" style="height: 50px; display: none;">
+                <div class="col-6 col-md-5 col-lg-4 m-auto">
+                    <button class="btn btn-mainColor btn-block">加载更多</button>
+                </div>
             </div>
         </div>
         <div class="page-user page-oyp">

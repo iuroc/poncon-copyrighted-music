@@ -15,6 +15,7 @@ var request_updateFileList
     = request_getFileInfo
     = request_playMusic
     = request_addLike
+    = request_secrahMusic
     = $.ajax()
 
 // 不重复加载的Ajax数据
@@ -462,6 +463,53 @@ function ifLogin() {
     }
 }
 
+/**
+ * 搜索音乐
+ * @param {string} keyword 搜索关键词
+ * @param {int} page 页码
+ * @param {int} pageSize 每页加载数量
+ */
+function searchMusic(keyword, page, pageSize) {
+    if (page == 0) {
+        $('.page-search .musicList').html('')
+    }
+    $('.page-search .loadMore').hide()
+    $('.page-search .loading').show()
+    $('.page-search .loadMore button').show()
+    $('.page-search .loadMore button').unbind().click(function () {
+        searchMusic(keyword, ++page, pageSize)
+    })
+    request_secrahMusic.abort()
+    request_secrahMusic = $.ajax({
+        method: 'post',
+        url: baseUrl + 'api/searchMusic.php',
+        data: {
+            page: page,
+            pageSize: pageSize,
+            keyword: keyword,
+            username: getUserInfo('username'),
+            password: getUserInfo('password')
+        },
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: function (data) {
+            $('.page-search .loading').hide()
+            $('.page-search .loadMore').show()
+            if (data.code == 200) {
+                var list = data.result
+                if (list.length == 0) {
+                    $('.page-search .loadMore button').hide()
+                }
+                var html = getListHtml(list)
+                $('.page-search .musicList').append(html)
+                addClick('search')
+            } else {
+                alert(data.msg)
+            }
+        }
+    })
+}
+
 $(document).ready(function () {
     console.log('%cHello Poncon 2022-05-07', 'color: orange; border: 2px solid orange; padding: 2px 4px; font-size: 16px;')
     if (!location.hash.split('/')[1]) {
@@ -636,4 +684,18 @@ $(document).ready(function () {
     $('body').show()
     $('a').attr('draggable', 'false')
     new ClipboardJS('.copybtn')
+    $('.page-search button.search').click(function () {
+        var keyword = $('.page-search input.keyword').val()
+        if (keyword) {
+            searchMusic(keyword, 0, 36)
+        }
+    })
+    $('.page-search input.keyword').bind('keyup', function (event) {
+        if (event.keyCode == "13") {
+            //编辑框失去焦点
+            $('.page-search input.keyword').blur()
+            //模拟点击搜索按钮
+            $('.page-search button.search').click()
+        }
+    })
 })

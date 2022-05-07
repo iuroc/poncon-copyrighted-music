@@ -129,3 +129,7 @@
 .musicList .active * {
     color: white !important;
 }
+
+.border-mainColor {
+    border-color: var(--mainColor);
+}
