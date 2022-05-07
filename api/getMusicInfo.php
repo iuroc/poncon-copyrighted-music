@@ -74,11 +74,12 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             )));
         }
         // 更新数据库下载链接
+        $download_url = addslashes($download_url);
         $result3 = mysqli_query($conn, "UPDATE `copyrighted_music` SET `downloadUrl` = '$download_url', `url_update_time` = " . time() . " WHERE `fileId` = '$fileId' LIMIT 1;");
         if (!$result3) {
             die(json_encode(array(
                 'code' => 903,
-                'msg' => '数据库出错'
+                'msg' => '数据库出错，' . mysqli_error($conn)
             )));
         }
         $row['downloadUrl'] = $download_url;
