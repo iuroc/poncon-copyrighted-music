@@ -145,54 +145,10 @@ function loadMusicList(type, page, pageSize) {
                 }
                 var html = getListHtml(list)
                 $('.page-musicList .musicList').append(html)
-                $('.page-musicList .musicList .file-' + nowFileId).addClass('active')
                 $('.page-musicList .loadMore button').unbind().click(function () {
                     loadMusicList(type, ++page, pageSize)
                 })
-                $('.page-musicList .musicList-item h5, .page-musicList .musicList-item .msg').unbind().click(function () {
-                    $('.page-musicList .musicList .active').removeClass('active')
-                    $(this).parent().addClass('active')
-                    var fileId = $(this).parent().data('fileid')
-                    playMusic(fileId, this)
-                })
-                $('.page-musicList .musicList-item span.addLike').unbind().click(function () {
-                    if (!UserHasLogin) {
-                        location.hash = '/login/'
-                        return
-                    }
-                    var hasLike = $(this).data('haslike')
-                    var fileId = $(this).parent().parent().data('fileid')
-                    var ele = $(this)
-                    request_addLike.abort()
-                    request_addLike = $.ajax({
-                        method: 'post',
-                        url: baseUrl + 'api/addLikeNum.php',
-                        data: {
-                            fileId: fileId,
-                            username: getUserInfo('username'),
-                            password: getUserInfo('password')
-                        },
-                        contentType: 'application/x-www-form-urlencoded',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.code == 200) {
-                                if (data.type) {
-                                    ele.removeClass('text-warning')
-                                    ele.find('.bi-star-fill').removeClass('bi-star-fill').addClass('bi-star')
-                                    var ele2 = ele.find('.like_num')
-                                    ele2.html(parseInt(ele2.text()) - 1)
-                                } else {
-                                    ele.addClass('text-warning')
-                                    ele.find('.bi-star').removeClass('bi-star').addClass('bi-star-fill')
-                                    var ele2 = ele.find('.like_num')
-                                    ele2.html(parseInt(ele2.text()) + 1)
-                                }
-                            } else {
-                                alert(data.msg)
-                            }
-                        }
-                    })
-                })
+                addClick('musicList')
             } else {
                 alert(data.msg)
             }
@@ -214,6 +170,105 @@ function fileSize(e) {
         e /= t
     }
 }
+
+/**
+ * 加载用户收藏列表
+ * @param {int} page 初始值未为1
+ * @param {int} pageSize 每页加载数量
+ */
+function loadUserLikeList(page, pageSize) {
+    if (page == 0) {
+        $('.page-user .musicList').html('')
+    }
+    $.ajax({
+        method: 'post',
+        url: 'api/getUserLikeList.php',
+        data: {
+            page: page,
+            pageSize: pageSize,
+            username: getUserInfo('username'),
+            password: getUserInfo('password')
+        },
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: function (data) {
+            if (data.code == 200) {
+                var list = data.result
+                var html = getListHtml(list)
+                $('.page-user .musicList').append(html)
+                addClick('user')
+            } else {
+                alert(data.msg)
+            }
+        }
+    })
+}
+
+/**
+ * 为播放列表绑定事件
+ * @param {string} target 当前音乐列表所在页面名称
+ */
+function addClick(target) {
+    $('.page-' + target + ' .musicList .file-' + nowFileId).addClass('active')
+    $('.page-' + target + ' .musicList-item h5, .page-' + target + ' .musicList-item .msg').unbind().click(function () {
+        $('.page-' + target + ' .musicList .active').removeClass('active')
+        $(this).parent().addClass('active')
+        var fileId = $(this).parent().data('fileid')
+        playMusic(fileId, this)
+    })
+    $('.page-' + target + ' .musicList-item span.addLike').unbind().click(function () {
+        if (!UserHasLogin) {
+            location.hash = '/login/'
+            return
+        }
+        var hasLike = $(this).attr('data-haslike')
+        if (parseInt(hasLike)) {
+            if (!confirm('确定要取消收藏？')) {
+                return
+            }
+        }
+        var fileId = $(this).parent().parent().data('fileid')
+        var ele = $(this)
+        request_addLike.abort()
+        request_addLike = $.ajax({
+            method: 'post',
+            url: baseUrl + 'api/addLikeNum.php',
+            data: {
+                fileId: fileId,
+                username: getUserInfo('username'),
+                password: getUserInfo('password')
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 200) {
+                    if (data.type) {
+                        // 已经取消收藏
+                        ele.removeClass('text-warning')
+                        ele.find('.bi-star-fill').removeClass('bi-star-fill').addClass('bi-star')
+                        var ele2 = ele.find('.like_num')
+                        ele2.html(parseInt(ele2.text()) - 1)
+                        ele.attr('data-haslike', 0)
+                        // 用户收藏列表刷新
+                        if (target == 'user') {
+                            loadUserLikeList(0, 36)
+                        }
+                    } else {
+                        // 已经收藏
+                        ele.addClass('text-warning')
+                        ele.find('.bi-star').removeClass('bi-star').addClass('bi-star-fill')
+                        var ele2 = ele.find('.like_num')
+                        ele2.html(parseInt(ele2.text()) + 1)
+                        ele.attr('data-haslike', 1)
+                    }
+                } else {
+                    alert(data.msg)
+                }
+            }
+        })
+    })
+}
+
 /**
  * 响应路由控制
  * @param {string} hash 页面的hash，如#/home/
@@ -252,54 +307,7 @@ function router(hash) {
                     var list = data.result
                     var html = getListHtml(list)
                     $('.page-home .musicList').html(html)
-                    $('.page-home .musicList .file-' + nowFileId).addClass('active')
-                    $('.page-home .loadMore button').unbind().click(function () {
-                        loadMusicList(type, ++page, pageSize)
-                    })
-                    $('.page-home .musicList-item h5, .page-home .musicList-item .msg').unbind().click(function () {
-                        $('.page-home .musicList .active').removeClass('active')
-                        $(this).parent().addClass('active')
-                        var fileId = $(this).parent().data('fileid')
-                        playMusic(fileId, this)
-                    })
-                    $('.page-home .musicList-item span.addLike').unbind().click(function () {
-                        if (!UserHasLogin) {
-                            location.hash = '/login/'
-                            return
-                        }
-                        var hasLike = $(this).data('haslike')
-                        var fileId = $(this).parent().parent().data('fileid')
-                        var ele = $(this)
-                        request_addLike.abort()
-                        request_addLike = $.ajax({
-                            method: 'post',
-                            url: baseUrl + 'api/addLikeNum.php',
-                            data: {
-                                fileId: fileId,
-                                username: getUserInfo('username'),
-                                password: getUserInfo('password')
-                            },
-                            contentType: 'application/x-www-form-urlencoded',
-                            dataType: 'json',
-                            success: function (data) {
-                                if (data.code == 200) {
-                                    if (data.type) {
-                                        ele.removeClass('text-warning')
-                                        ele.find('.bi-star-fill').removeClass('bi-star-fill').addClass('bi-star')
-                                        var ele2 = ele.find('.like_num')
-                                        ele2.html(parseInt(ele2.text()) - 1)
-                                    } else {
-                                        ele.addClass('text-warning')
-                                        ele.find('.bi-star').removeClass('bi-star').addClass('bi-star-fill')
-                                        var ele2 = ele.find('.like_num')
-                                        ele2.html(parseInt(ele2.text()) + 1)
-                                    }
-                                } else {
-                                    alert(data.msg)
-                                }
-                            }
-                        })
-                    })
+                    addClick('home')
                 } else {
                     alert(data.msg)
                 }
@@ -365,7 +373,11 @@ function router(hash) {
         loadMusicList(typeKey, 0, 36)
 
     } else if (target == 'user') {
-        document.title = '我的 - ' + webTitle
+        if (!UserHasLogin && !ifLogin()) {
+            location.hash = '/login/'
+            return
+        }
+        loadUserLikeList(0, 36)
     } else {
         location.hash = '/home/'
     }
@@ -438,10 +450,6 @@ function ifLogin() {
         return false
     }
 }
-
-
-
-
 
 $(document).ready(function () {
     console.log('%cHello Poncon 2022-05-07', 'color: orange; border: 2px solid orange; padding: 2px 4px; font-size: 16px;')

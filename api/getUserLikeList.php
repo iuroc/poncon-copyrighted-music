@@ -55,6 +55,7 @@ if ($cou > count($data)) {
 
 $newData = array();
 for ($x = $offset; $x < $cou; $x++) {
+    $data[$x]['hasLike'] = 1;
     array_push($newData, $data[$x]);
 }
 
