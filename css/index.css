@@ -21,3 +21,98 @@
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgb(82 82 136 / 25%);
 }
+
+.border-mainColor {
+    border-color: var(--mainColor) !important;
+}
+
+.text-mainColor {
+    color: var(--mainColor);
+}
+
+.musicTypeList-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5rem;
+    transition: background-color .5s, box-shadow .5s;
+}
+
+.musicTypeList-item:hover {
+    background-color: var(--mainColor);
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.2rem rgb(82 82 136 / 25%) !important;
+}
+
+.musicTypeList-item:hover * {
+    color: white;
+}
+
+.musicTypeList-item h5 {
+    font-size: 1.5rem;
+}
+
+.musicTypeList-item:hover .msg {
+    display: none;
+}
+
+.musicTypeList-item:hover h5 {
+    font-size: 2rem;
+}
+
+.musicTypeList-item:hover {
+    background-color: var(--mainColor);
+    color: white;
+}
+
+.musicList-item .msg {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.cursor-warning:hover {
+    color: var(--warning);
+}
+
+.cursor-mainColor:hover {
+    color: var(--mainColor);
+}
+
+.aplayerBox {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#aplayer {
+    margin: 0 auto;
+    padding: 0;
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+    /* box-shadow: 0 1rem 3rem rgba(238, 255, 0, 0.178) !important; */
+    box-shadow: 0 0 3rem rgba(58, 124, 199, 0.336) !important;
+}
+
+.goDownloadMusicGood {
+    transition: box-shadow .5s;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    box-shadow: 0 0rem .5rem rgba(58, 124, 199, 0.616) !important;
+    border-color: #ffffff !important;
+    color: dodgerblue !important;
+}
+
+.goDownloadMusicGood:hover {
+    box-shadow: 0 0rem 1rem rgba(58, 124, 199, 0.616) !important;
+    transition: box-shadow .2s;
+}

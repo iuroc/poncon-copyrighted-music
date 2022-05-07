@@ -40,7 +40,7 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
         echo json_encode(array(
             'code' => 200,
             'msg' => '查询成功(缓存)',
-            'result' => $row['downloadUrl']
+            'result' => $row
         ));
     } else {
         // 链接过期，重新获取
@@ -81,10 +81,11 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 'msg' => '数据库出错'
             )));
         }
+        $row['downloadUrl'] = $download_url;
         echo json_encode(array(
             'code' => 200,
             'msg' => '查询成功(非缓存)',
-            'result' => $download_url
+            'result' => $row
         ));
     }
 }

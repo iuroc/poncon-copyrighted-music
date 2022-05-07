@@ -11,8 +11,135 @@ var UserHasLogin = 0 // 用户已经登录？
 
 var request_updateFileList
     = request_getFileInfo
+    = request_playMusic
     = $.ajax()
 
+// 不重复加载的Ajax数据
+var neverLoad_getTypeList = 0
+
+// 播放器
+var ap
+
+/**
+ * 加载音乐播放器，播放音乐
+ * @param {string} fileId 音乐文件ID·
+ */
+function playMusic(fileId) {
+    request_playMusic.abort()
+    request_playMusic = $.ajax({
+        method: 'post',
+        url: baseUrl + 'api/getMusicInfo.php',
+        data: {
+            fileId: fileId
+        },
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: function (data) {
+            if (data.code == 200) {
+                $('.aplayerBox, .goDownloadMusicGood').show().css('position', 'fixed')
+                ap = new APlayer({
+                    container: document.getElementById('aplayer'),
+                    audio: [{
+                        name: data.result.fileName.replace(/(.*).mp3$/, '$1'),
+                        artist: '无忧音乐网',
+                        url: data.result.downloadUrl,
+                        cover: 'img/music.jpg',
+                        theme: '#17a2b8'
+                    }]
+                })
+                ap.play()
+            } else {
+                alert(data.msg)
+            }
+        }
+    })
+}
+
+
+
+/**
+ * 加载音乐列表
+ * @param {string} type 音乐类型
+ * @param {int} page 页码
+ * @param {int} pageSize 每页加载数量
+ */
+function loadMusicList(type, page, pageSize) {
+    if (page == 0) {
+        $('.page-musicList .musicList').html('')
+    }
+    $('.page-musicList .loadMore').hide()
+    $('.page-musicList .loading').show()
+    $('.page-musicList .loadMore button').show()
+    $.ajax({
+        method: 'post',
+        url: baseUrl + 'api/getMusicList.php',
+        data: {
+            type: type,
+            page: page,
+            pageSize: pageSize
+        },
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: function (data) {
+            $('.page-musicList .loading').hide()
+            $('.page-musicList .loadMore').show()
+            if (data.code == 200) {
+                var list = data.result
+                if (list.length == 0) {
+                    $('.page-musicList .loadMore button').hide()
+                    return
+                }
+                for (var i = 0, html = ''; i < list.length; i++) {
+                    html += '<div class="col-xl-3 col-lg-4 col-md-6">\
+                                <div class="p-3 rounded shadow border mb-4 musicList-item" data-fileid="' + list[i].fileId + '">\
+                                    <h5 class="mb-2 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
+                                    <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
+                                    <div class="text-nowrap overflow-hidden">\
+                                        <span class="bi bi-headphones"></span>\
+                                        <span class="listen_num mr-3 mr-sm-2">' + list[i].listen_num + '</span>\
+                                        <span class="bi bi-filetype-mp3"></span>\
+                                        <span class="fileSize mr-3 mr-sm-2">' + fileSize(list[i].size) + '</span>\
+                                        <span class="cursor cursor-warning">\
+                                            <span class="bi bi-star"></span>\
+                                            <span class="like_num">' + list[i].like_num + '</span>\
+                                        </span>\
+                                    </div>\
+                                </div>\
+                            </div>'
+                }
+                $('.page-musicList .musicList').append(html)
+                $('.page-musicList .loadMore button').unbind().click(function () {
+                    loadMusicList(type, ++page, pageSize)
+                })
+                $('.page-musicList .musicList-item h5, .page-musicList .musicList-item .msg').unbind().click(function () {
+                    var fileId = $(this).parent().data('fileid')
+                    playMusic(fileId)
+                })
+            } else {
+
+            }
+        }
+    })
+}
+/**
+ * 转换KB为其他单位
+ * @param {int} e 文件大小KB
+ * @returns
+ */
+function fileSize(e) {
+    var a = ["B", "KB", "MB", "GB", "TB", "PB"]
+    var t = 1024
+    for (var i = 0; i < a.length; i++) {
+        if (e < t) {
+            return (i == 0 ? e : e.toFixed(2)) + a[i]
+        }
+        e /= t
+    }
+}
+/**
+ * 响应路由控制
+ * @param {string} hash 页面的hash，如#/home/
+ */
 function router(hash) {
     // 获取目标界面标识
     hash = hash.split('/')
@@ -27,6 +154,35 @@ function router(hash) {
     // 判断目标界面标识 执行对应模块的载入事件
     if (target == 'home') {
         document.title = webTitle
+        if (neverLoad_getTypeList) {
+            return
+        }
+        $.ajax({
+            method: 'get',
+            url: baseUrl + 'api/getTypeList.php',
+            contentType: 'application/x-www-form-urlencoded',
+            dataType: 'json',
+            success: function (data) {
+                neverLoad_getTypeList = 1
+                var html = ''
+                for (var i = 0; i < data.length; i++) {
+                    html += '<div class="col-xl-3 col-lg-4 col-6">\
+                                <div data-index="' + i + '" class="rounded shadow border p-3 mb-4 border-mainColor text-center musicTypeList-item ' + (i == 0 ? 'musicTypeList-item-active' : '') + '">\
+                                    <div class="overflow-hidden">\
+                                        <h5 class="text-mainColor mb-0 text-nowrap text-truncate">' + data[i][1] + '</h5>\
+                                        <div class="msg text-nowrap text-truncate">' + data[i][0] + '</div>\
+                                    </div>\
+                                </div>\
+                            </div>';
+                }
+                $('.page-home .musicTypeList').html(html)
+                $('.page-home .musicTypeList .musicTypeList-item').unbind().click(function () {
+                    var index = $(this).data('index')
+                    var item = data[parseInt(index)]
+                    location.hash = '/musicList/' + encodeURIComponent(item[0]) + '/' + encodeURIComponent(item[1]) + '/'
+                })
+            }
+        })
     } else if (target == 'about') {
         document.title = '关于 - ' + webTitle
         // 界面载入事件
@@ -44,30 +200,45 @@ function router(hash) {
             page.find('.title').html('用户登录')
             document.title = '用户登录 - ' + webTitle
         }
+    } else if (target == 'musicList') {
+        var typeKey = decodeURIComponent(hash[2])
+        var typeName = decodeURIComponent(hash[3])
+        document.title = typeName + ' - 音乐列表 - ' + webTitle
+        $('.page-musicList .breadcrumb .active').html(typeName + ' - 音乐列表')
+        loadMusicList(typeKey, 0, 36)
     } else {
         location.hash = '/home/'
     }
 }
+
 window.addEventListener('hashchange', function (event) {
     // 监听Hash改变 通过location.hash='xxx'可触发
     var hash = new URL(event.newURL).hash
     router(hash)
 })
 
+/**
+ * 登陆成功时执行的事件
+ */
 function hasLogin() {
-    // 登陆成功时执行的事件
     UserHasLogin = 1
     $('.navbar-collapse li.nav-item-login').hide()
     $('.navbar-collapse li.nav-item-logout').show()
 }
 
-
+/**
+ * 未登录时执行的事件
+ */
 function notLogin() {
-    // 未登录时执行的事件
     UserHasLogin = 0
     $('.navbar-collapse li.nav-item-logout').hide()
     $('.navbar-collapse li.nav-item-login').show()
 }
+
+/**
+ * 判断用户是否已经登录
+ * @returns bool
+ */
 function ifLogin() {
     try {
         var userdata = JSON.parse(localStorage[userLoginDataKeyName])
@@ -120,8 +291,14 @@ $(document).ready(function () {
     router(location.hash)
 
     ifLogin()
+
+    /**
+     * 收集并验证表单
+     * @param {object} data 空对象，用于存储表单数据
+     * @param {int} mode 验证模式，1:验证整个注册页表单 2: 跳过验证码字段
+     * @returns 
+     */
     function validation_register(data, mode) {
-        // mode 1:验证整个注册页表单 2: 跳过验证码字段
         data.username = $('.page-login .page-sub-register .input-username').val()
         data.email = $('.page-login .page-sub-register .input-email').val()
         data.password = $('.page-login .page-sub-register .input-password').val()
@@ -155,7 +332,7 @@ $(document).ready(function () {
         var password = data.password
         $.ajax({
             method: 'post',
-            url: baseUrl + './api/register.php',
+            url: baseUrl + 'api/register.php',
             data: {
                 username: username,
                 password: md5(password),
@@ -187,7 +364,7 @@ $(document).ready(function () {
         ele.attr('disabled', 'disabled')
         $.ajax({
             method: 'post',
-            url: baseUrl + './api/getCode.php',
+            url: baseUrl + 'api/getCode.php',
             data: {
                 email: data.email
             },
@@ -229,7 +406,7 @@ $(document).ready(function () {
         }
         $.ajax({
             method: 'post',
-            url: baseUrl + './api/login.php',
+            url: baseUrl + 'api/login.php',
             data: {
                 username: username,
                 password: md5(password)
@@ -300,7 +477,15 @@ $(document).ready(function () {
         localStorage[userLoginDataKeyName] = ''
         notLogin()
     })
-
+    $('span.goDownloadMusicGood').click(function () {
+        if (UserHasLogin) {
+            var downloadUrl = ap.options.audio[0].url
+            $('.download_iframes').append('<iframe src="' + downloadUrl + '"></iframe>')
+            $('.modal-msg').modal('show')
+        } else {
+            location.hash = '/login/'
+        }
+    })
     $('body').show()
     $('a').attr('draggable', 'false')
     new ClipboardJS('.copybtn')
