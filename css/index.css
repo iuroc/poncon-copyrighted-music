@@ -96,6 +96,7 @@
 #aplayer {
     margin: 0 auto;
     padding: 0;
+    border: 1px solid var(--mainColor);
     border-top-left-radius: 1rem !important;
     border-top-right-radius: 1rem !important;
     /* box-shadow: 0 1rem 3rem rgba(238, 255, 0, 0.178) !important; */
