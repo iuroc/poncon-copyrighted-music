@@ -14,12 +14,30 @@ include './init_db.php';
 $type = defaultGetData('type', '');
 $page = defaultGetData('page', 0);
 $pageSize = defaultGetData('pageSize', 30);
+$username = defaultGetData('username', 30);
+$password = defaultGetData('password', '');
 $offset = $page * $pageSize;
 
+
+if (!$username || !$password) {
+    die(json_encode(array(
+        'code' => 900,
+        'msg' => '参数缺失'
+    )));
+}
+
+$result = mysqli_query($conn, "SELECT * FROM `copyrighted_music_user` WHERE (`username` = '$username' OR `email` = '$username') AND `password` = '$password' LIMIT 1");
+if (!mysqli_num_rows($result)) {
+    die(json_encode(array(
+        'code' => 907,
+        'msg' => '账号或密码错误'
+    )));
+}
+
 if ($type == 'all') {
-    $sql = "SELECT * FROM `copyrighted_music` ORDER BY `listen_num` DESC LIMIT $pageSize OFFSET $offset;";
+    $sql = "SELECT * FROM `copyrighted_music` ORDER BY `like_num` DESC LIMIT $pageSize OFFSET $offset;";
 } else {
-    $sql = "SELECT * FROM `copyrighted_music` WHERE `musicType` LIKE '%$type%' ORDER BY `listen_num` DESC LIMIT $pageSize OFFSET $offset;";
+    $sql = "SELECT * FROM `copyrighted_music` WHERE `musicType` LIKE '%$type%' ORDER BY `like_num` DESC LIMIT $pageSize OFFSET $offset;";
 }
 $result = mysqli_query($conn, $sql);
 if (!$result) {
@@ -32,6 +50,14 @@ if (!$result) {
 $data = array('code' => 200, 'msg' => '查询成功', 'result' => array());
 $x = 0;
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+    $collect_userList = $row['collect_userList'];
+    $collect_userList_data = explode(',', $collect_userList);
+    if (in_array($username, $collect_userList_data)) {
+        $row['hasLike'] = 1; // 用户已收藏
+    } else {
+        $row['hasLike'] = 0; // 用户未收藏
+    }
+    $row['like_num'] = count($collect_userList_data) - 1;
     $data['result'][$x++] = $row;
 }
 echo json_encode($data);

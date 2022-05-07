@@ -46,6 +46,7 @@ if (!mysqli_num_rows($result)) {
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     $collect_userList = $row['collect_userList'];
     $collect_userList_data = explode(',', $collect_userList);
+    $like_num = (int)$row['like_num'];
     // 判断用户是否已经收藏
     if (in_array($username, $collect_userList_data)) {
         // 用户已经收藏，取消收藏
@@ -57,12 +58,14 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             }
         }
         $order_type = 1;
+        $like_num--;
     } else {
         // 用户未收藏，增加收藏
         $collect_userList .= ',' . $username;
         $order_type = 0;
+        $like_num++;
     }
-    $sql = "UPDATE `copyrighted_music` SET `collect_userList` = '$collect_userList' WHERE `fileId` = '$fileId';";
+    $sql = "UPDATE `copyrighted_music` SET `collect_userList` = '$collect_userList', `like_num` = $like_num WHERE `fileId` = '$fileId';";
     $result2 = mysqli_query($conn, $sql);
     if (!$result2) {
         die(json_encode(array(
@@ -73,12 +76,14 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     if ($order_type) {
         echo json_encode(array(
             'code' => 200,
-            'msg' => '取消收藏成功'
+            'msg' => '取消收藏成功',
+            'type' => $order_type
         ));
     } else {
         echo json_encode(array(
             'code' => 200,
-            'msg' => '收藏成功'
+            'msg' => '收藏成功',
+            'type' => $order_type
         ));
     }
 }

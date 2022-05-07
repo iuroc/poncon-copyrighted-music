@@ -38,6 +38,7 @@ if (!mysqli_num_rows($result)) {
  */
 function addListenNum($conn, $listen_num, $fileId)
 {
+    $listen_num++;
     mysqli_query($conn, "UPDATE `copyrighted_music` SET `listen_num` = $listen_num WHERE `fileId` = '$fileId' LIMIT 1;");
 }
 

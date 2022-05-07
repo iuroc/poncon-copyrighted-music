@@ -14,6 +14,7 @@ var nowFileId = '' // 当前播放音乐的文件ID
 var request_updateFileList
     = request_getFileInfo
     = request_playMusic
+    = request_addLike
     = $.ajax()
 
 // 不重复加载的Ajax数据
@@ -63,7 +64,19 @@ function playMusic(fileId, ele) {
     })
 }
 
-
+/**
+ * 获取用户信息
+ * @param {string} keyName 当前应用程序存储数据的键名
+ * @returns 获得的值
+ */
+function getUserInfo(keyName) {
+    try {
+        var userdata = JSON.parse(localStorage[userLoginDataKeyName])
+        return userdata[keyName]
+    } catch (error) {
+        return null
+    }
+}
 
 /**
  * 加载音乐列表
@@ -84,7 +97,9 @@ function loadMusicList(type, page, pageSize) {
         data: {
             type: type,
             page: page,
-            pageSize: pageSize
+            pageSize: pageSize,
+            username: getUserInfo('username'),
+            password: getUserInfo('password')
         },
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
@@ -98,6 +113,17 @@ function loadMusicList(type, page, pageSize) {
                     return
                 }
                 for (var i = 0, html = ''; i < list.length; i++) {
+                    if (list[i].hasLike) {
+                        var html_like = '<span class="addLike cursor cursor-warning text-warning" data-haslike="1">\
+                                            <span class="bi bi bi-star-fill"></span>\
+                                            <span class="like_num">' + list[i].like_num + '</span>\
+                                        </span>'
+                    } else {
+                        var html_like = '<span class="addLike cursor cursor-warning" data-haslike="0">\
+                                            <span class="bi bi bi-star"></span>\
+                                            <span class="like_num">' + list[i].like_num + '</span>\
+                                        </span>'
+                    }
                     html += '<div class="col-xl-3 col-lg-4 col-md-6">\
                                 <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
                                     <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
@@ -108,10 +134,7 @@ function loadMusicList(type, page, pageSize) {
                                         <span class="listen_num mr-3 mr-sm-2">' + list[i].listen_num + '</span>\
                                         <span class="bi bi-filetype-mp3"></span>\
                                         <span class="fileSize mr-3 mr-sm-2">' + fileSize(list[i].size) + '</span>\
-                                        <span class="cursor cursor-warning">\
-                                            <span class="bi bi-star"></span>\
-                                            <span class="like_num">' + list[i].like_num + '</span>\
-                                        </span>\
+                                        ' + html_like + '\
                                     </div>\
                                 </div>\
                             </div>'
@@ -126,6 +149,40 @@ function loadMusicList(type, page, pageSize) {
                     $(this).parent().addClass('active')
                     var fileId = $(this).parent().data('fileid')
                     playMusic(fileId, this)
+                })
+                $('.page-musicList .musicList-item span.addLike').unbind().click(function () {
+                    var hasLike = $(this).data('haslike')
+                    var fileId = $(this).parent().parent().data('fileid')
+                    var ele = $(this)
+                    request_addLike.abort()
+                    request_addLike = $.ajax({
+                        method: 'post',
+                        url: baseUrl + 'api/addLikeNum.php',
+                        data: {
+                            fileId: fileId,
+                            username: getUserInfo('username'),
+                            password: getUserInfo('password')
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code == 200) {
+                                if (data.type) {
+                                    ele.removeClass('text-warning')
+                                    ele.find('.bi-star-fill').removeClass('bi-star-fill').addClass('bi-star')
+                                    var ele2 = ele.find('.like_num')
+                                    ele2.html(parseInt(ele2.text()) - 1)
+                                } else {
+                                    ele.addClass('text-warning')
+                                    ele.find('.bi-star').removeClass('bi-star').addClass('bi-star-fill')
+                                    var ele2 = ele.find('.like_num')
+                                    ele2.html(parseInt(ele2.text()) + 1)
+                                }
+                            } else {
+                                alert(data.msg)
+                            }
+                        }
+                    })
                 })
             } else {
 
