@@ -156,6 +156,10 @@ function loadMusicList(type, page, pageSize) {
                     playMusic(fileId, this)
                 })
                 $('.page-musicList .musicList-item span.addLike').unbind().click(function () {
+                    if (!UserHasLogin) {
+                        location.hash = '/login/'
+                        return
+                    }
                     var hasLike = $(this).data('haslike')
                     var fileId = $(this).parent().parent().data('fileid')
                     var ele = $(this)
@@ -259,6 +263,10 @@ function router(hash) {
                         playMusic(fileId, this)
                     })
                     $('.page-home .musicList-item span.addLike').unbind().click(function () {
+                        if (!UserHasLogin) {
+                            location.hash = '/login/'
+                            return
+                        }
                         var hasLike = $(this).data('haslike')
                         var fileId = $(this).parent().parent().data('fileid')
                         var ele = $(this)
@@ -588,38 +596,6 @@ $(document).ready(function () {
             $(this).blur()
             $('.page-login .page-sub-register button.getVerCode').click()
         }
-    })
-    $('.page-home button.btn-input-file').click(function () {
-        $('.page-home input.input-file').click()
-    })
-    $('.page-home input.input-file').change(function () {
-        // 没有登录，无法添加文件，转到登录
-        if (!UserHasLogin) {
-            location.hash = '/login/'
-            $('.page-home input.input-file').val('')
-            return
-        }
-        if (isWorking) {
-            $('.page-home input.input-file').val('')
-            return
-        }
-        $('.page-home .btns').show()
-        var fileDatas = $(this).prop('files')
-        if (!fileDatas.length) {
-            $('.page-home input.input-file').val('')
-            return
-        }
-
-        if (isWorkFinished) {
-            isWorkFinished = 0
-            // 刚刚完成任务，此时新增文件，直接清空原列表，并恢复按钮
-            $('.page-home .workList').html('')
-            fileList = []
-            $('.page-home button.allUpload').show()
-            $('.page-home button.allCancel').html('全部取消')
-        }
-
-        addFile(fileDatas)
     })
 
     $('.nav-item-logout').click(function () {

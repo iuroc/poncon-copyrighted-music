@@ -19,20 +19,17 @@ $password = defaultGetData('password', '');
 $offset = $page * $pageSize;
 
 
-if (!$username || !$password) {
-    die(json_encode(array(
-        'code' => 900,
-        'msg' => '参数缺失'
-    )));
+if ($username && $password) {
+    $result = mysqli_query($conn, "SELECT * FROM `copyrighted_music_user` WHERE (`username` = '$username' OR `email` = '$username') AND `password` = '$password' LIMIT 1");
+    if (!mysqli_num_rows($result)) {
+        die(json_encode(array(
+            'code' => 907,
+            'msg' => '账号或密码错误'
+        )));
+    }
 }
 
-$result = mysqli_query($conn, "SELECT * FROM `copyrighted_music_user` WHERE (`username` = '$username' OR `email` = '$username') AND `password` = '$password' LIMIT 1");
-if (!mysqli_num_rows($result)) {
-    die(json_encode(array(
-        'code' => 907,
-        'msg' => '账号或密码错误'
-    )));
-}
+
 
 if ($type == 'all') {
     $sql = "SELECT * FROM `copyrighted_music` ORDER BY `like_num` DESC LIMIT $pageSize OFFSET $offset;";
