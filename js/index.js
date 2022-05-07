@@ -95,7 +95,7 @@ function loadMusicList(type, page, pageSize) {
                 for (var i = 0, html = ''; i < list.length; i++) {
                     html += '<div class="col-xl-3 col-lg-4 col-md-6">\
                                 <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
-                                    <h5 class="pb-2 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
+                                    <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
                                     <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
                                     <div class="text-nowrap overflow-hidden">\
                                         <span class="bi bi-headphones"></span>\
