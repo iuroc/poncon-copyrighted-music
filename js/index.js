@@ -180,6 +180,12 @@ function loadUserLikeList(page, pageSize) {
     if (page == 0) {
         $('.page-user .musicList').html('')
     }
+    $('.page-user .loadMore').hide()
+    $('.page-user .loading').show()
+    $('.page-user .loadMore button').show()
+    $('.page-user .loadMore button').unbind().click(function () {
+        loadUserLikeList(++page, pageSize)
+    })
     $.ajax({
         method: 'post',
         url: 'api/getUserLikeList.php',
@@ -192,8 +198,13 @@ function loadUserLikeList(page, pageSize) {
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
         success: function (data) {
+            $('.page-user .loading').hide()
+            $('.page-user .loadMore').show()
             if (data.code == 200) {
                 var list = data.result
+                if (list.length == 0) {
+                    $('.page-user .loadMore button').hide()
+                }
                 var html = getListHtml(list)
                 $('.page-user .musicList').append(html)
                 addClick('user')

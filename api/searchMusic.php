@@ -2,21 +2,25 @@
 
 /**
  * 
- * 获取用户收藏列表
+ * 搜索音乐
  */
 include './init_db.php';
+$keyword = defaultGetData('keyword', '');
 $page = defaultGetData('page', 0);
 $pageSize = defaultGetData('pageSize', 30);
 $username = defaultGetData('username', '');
 $password = defaultGetData('password', '');
 $offset = $page * $pageSize;
 
-if (!$username || !$password) {
+$keyword = addslashes($keyword);
+
+if (!$keyword) {
     die(json_encode(array(
         'code' => 900,
         'msg' => '参数缺失'
     )));
 }
+
 
 if ($username && $password) {
     $result = mysqli_query($conn, "SELECT * FROM `copyrighted_music_user` WHERE (`username` = '$username' OR `email` = '$username') AND `password` = '$password' LIMIT 1");
@@ -28,7 +32,7 @@ if ($username && $password) {
     }
 }
 
-$sql = "SELECT * FROM `copyrighted_music`;";
+$sql = "SELECT * FROM `copyrighted_music` WHERE `fileName` LIKE '%$keyword%' OR `fileId` LIKE '%$keyword%' ORDER BY `like_num` DESC LIMIT $pageSize OFFSET $offset;;";
 $result = mysqli_query($conn, $sql);
 if (!$result) {
     die(json_encode(array(
@@ -37,31 +41,20 @@ if (!$result) {
     )));
 }
 
-$data = array();
+
+
+$data = array('code' => 200, 'msg' => '查询成功', 'result' => array());
+$x = 0;
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     $collect_userList = $row['collect_userList'];
     $collect_userList_data = explode(',', $collect_userList);
-    // 判断用户是否已经收藏
     if (in_array($username, $collect_userList_data)) {
-        array_push($data, $row);
+        $row['hasLike'] = 1; // 用户已收藏
+    } else {
+        $row['hasLike'] = 0; // 用户未收藏
     }
+    unset($row['collect_userList']);
+    $row['like_num'] = count($collect_userList_data) - 1;
+    $data['result'][$x++] = $row;
 }
-
-$cou = $offset + $pageSize;
-
-if ($cou > count($data)) {
-    $cou = count($data);
-}
-
-$newData = array();
-for ($x = $offset; $x < $cou; $x++) {
-    $data[$x]['hasLike'] = 1;
-    unset($data[$x]['collect_userList']);
-    array_push($newData, $data[$x]);
-}
-
-echo json_encode(array(
-    'code' => 200,
-    'mag' => '获取成功',
-    'result' => $newData
-));
+echo json_encode($data);

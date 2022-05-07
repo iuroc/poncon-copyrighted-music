@@ -94,7 +94,36 @@
             </div>
         </div>
         <div class="page-about page-oyp">
-            关于
+            <h3 class="mb-4 mt-2">关于本站</h3>
+            <div class="mb-4">
+                <div class="mb-2">100%免费音乐，免费用于商业用途，免费版税，免费署名，知识共享。</div>
+                <div class="mb-2">在法律允许的范围内，它是“无版权”的。</div>
+            </div>
+            <div class="mb-4">
+                <strong class="mb-3 d-block text-info">项目信息</strong>
+                <ul class="mb-0">
+                    <li class="mb-2">开发时间：2022年5月8日</li>
+                    <li class="mb-2">开发者：鹏优创网络工作室</li>
+                    <li class="mb-2">官网：<a href="http://poncon.tk" target="_blank">ouyangpeng.top</a></li>
+                    <li class="mb-2">项目仓库：<a href="https://gitee.com/poncon/poncon-copyrighted-music"
+                            target="_blank">https://gitee.com/poncon/poncon-copyrighted-music</a></li>
+                </ul>
+            </div>
+            <div class="mb-4">
+                <strong class="mb-3 d-block text-info">联系我们</strong>
+                <ul class="mb-4">
+                    <li class="mb-2">E-mail：<a href="mailto:ponconsoft@gmail.com"
+                            target="_blank">ponconsoft@gmail.com</a>
+                    </li>
+                    <li class="mb-2">QQ交流群：<a href="https://jq.qq.com/?_wv=1027&amp;k=PQuZNehB"
+                            target="_blank">1085954565</a></li>
+                </ul>
+            </div>
+            <div class="mb-4">
+                <strong class="d-block text-info">捐赠</strong>
+                <img src="https://p.ananas.chaoxing.com/star3/origin/84847d0d2572057b10ed5574ad358891.png"
+                    referrerpolicy="no-referrer" style="max-width: 200px;" />
+            </div>
         </div>
         <div class="page-login page-oyp">
             <div class="row mt-2">
@@ -183,11 +212,35 @@
             </div>
         </div>
         <div class="page-search page-oyp">
-            搜索
+            <div class="row mt-2">
+                <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11 mx-auto">
+                    <h3 class="mb-4 text-center title">音乐搜索</h3>
+                    <div class="input-group mb-4">
+                        <input type="search" class="form-control keyword" autocomplete="new-password"
+                            placeholder="请输入搜索关键词">
+                        <div class="input-group-append">
+                            <button class="btn btn-mainColor search">搜索</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row musicList">
+                
+            </div>
         </div>
         <div class="page-user page-oyp">
             <h3 class="mb-4"><span class="bi bi-star-fill mr-2"></span>我的收藏</h3>
             <div class="row musicList"></div>
+            <div class="loading mt-4 mb-3 text-center" style="height: 50px; display: none;">
+                <div class="spinner-border text-mainColor" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="loadMore mt-4 row mb-3" style="height: 50px;">
+                <div class="col-6 col-md-5 col-lg-4 m-auto">
+                    <button class="btn btn-mainColor btn-block">加载更多</button>
+                </div>
+            </div>
         </div>
         <div class="aplayerBox" style="display: none;">
             <div id="aplayer" class="container"></div>

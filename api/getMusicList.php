@@ -14,7 +14,7 @@ include './init_db.php';
 $type = defaultGetData('type', '');
 $page = defaultGetData('page', 0);
 $pageSize = defaultGetData('pageSize', 30);
-$username = defaultGetData('username', 30);
+$username = defaultGetData('username', '');
 $password = defaultGetData('password', '');
 $offset = $page * $pageSize;
 
@@ -55,6 +55,7 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
         $row['hasLike'] = 0; // 用户未收藏
     }
     $row['like_num'] = count($collect_userList_data) - 1;
+    unset($row['collect_userList']);
     $data['result'][$x++] = $row;
 }
 echo json_encode($data);
