@@ -8,7 +8,7 @@ if (location.hostname == 'localhost') {
 var webTitle = '无忧音乐网 - 海量无版权音乐共享'
 var userLoginDataKeyName = 'copyrighted_music_UserLoginData'
 var UserHasLogin = 0 // 用户已经登录？
-var nowLoadMusicType = '' // 当前加载的音乐列表类型
+// var nowLoadMusicType = '' // 当前加载的音乐列表类型
 var nowFileId = '' // 当前播放音乐的文件ID
 
 var request_updateFileList
@@ -350,10 +350,11 @@ function router(hash) {
         var typeName = decodeURIComponent(hash[3])
         document.title = typeName + ' - 音乐列表 - ' + webTitle
         $('.page-musicList .breadcrumb .active').html(typeName + ' - 音乐列表')
-        if (nowLoadMusicType != typeName) {
-            nowLoadMusicType = typeName
-            loadMusicList(typeKey, 0, 36)
-        }
+        // if (nowLoadMusicType != typeName) {
+        //     nowLoadMusicType = typeName
+        //     loadMusicList(typeKey, 0, 36)
+        // }
+        loadMusicList(typeKey, 0, 36)
 
     } else if (target == 'user') {
         document.title = '我的 - ' + webTitle
