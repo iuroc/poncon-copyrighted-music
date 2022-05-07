@@ -26,7 +26,10 @@ var ap
  * 加载音乐播放器，播放音乐
  * @param {string} fileId 音乐文件ID·
  */
-function playMusic(fileId) {
+function playMusic(fileId, ele) {
+    if (nowFileId == fileId) {
+        return
+    }
     nowFileId = fileId
     request_playMusic.abort()
     request_playMusic = $.ajax({
@@ -39,6 +42,8 @@ function playMusic(fileId) {
         dataType: 'json',
         success: function (data) {
             if (data.code == 200) {
+                ele = $(ele).parent().find('span.listen_num')
+                ele.html(parseInt(ele.text()) + 1)
                 $('.aplayerBox, .goDownloadMusicGood').show().css('position', 'fixed')
                 ap = new APlayer({
                     container: document.getElementById('aplayer'),
@@ -97,6 +102,7 @@ function loadMusicList(type, page, pageSize) {
                                 <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
                                     <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
                                     <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
+                                    <div class="text-info small mb-2">#' + list[i].musicType + '</div>\
                                     <div class="text-nowrap overflow-hidden">\
                                         <span class="bi bi-headphones"></span>\
                                         <span class="listen_num mr-3 mr-sm-2">' + list[i].listen_num + '</span>\
@@ -119,7 +125,7 @@ function loadMusicList(type, page, pageSize) {
                     $('.page-musicList .musicList .active').removeClass('active')
                     $(this).parent().addClass('active')
                     var fileId = $(this).parent().data('fileid')
-                    playMusic(fileId)
+                    playMusic(fileId, this)
                 })
             } else {
 
@@ -215,7 +221,9 @@ function router(hash) {
             nowLoadMusicType = typeName
             loadMusicList(typeKey, 0, 36)
         }
-        
+
+    } else if (target == 'user') {
+        document.title = '我的 - ' + webTitle
     } else {
         location.hash = '/home/'
     }

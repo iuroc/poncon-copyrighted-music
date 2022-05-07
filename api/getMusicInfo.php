@@ -32,6 +32,15 @@ if (!mysqli_num_rows($result)) {
     )));
 }
 
+
+/**
+ * 增加收听人数
+ */
+function addListenNum($conn, $listen_num, $fileId)
+{
+    mysqli_query($conn, "UPDATE `copyrighted_music` SET `listen_num` = $listen_num WHERE `fileId` = '$fileId' LIMIT 1;");
+}
+
 // 判断数据库的下载连接是否过期
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     $url_update_time = (int)($row['url_update_time']);
@@ -42,6 +51,7 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             'msg' => '查询成功(缓存)',
             'result' => $row
         ));
+        addListenNum($conn, (int)($row['listen_num']), $fileId);
     } else {
         // 链接过期，重新获取
         $options = array(
@@ -88,5 +98,6 @@ while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             'msg' => '查询成功(非缓存)',
             'result' => $row
         ));
+        addListenNum($conn, (int)($row['listen_num']), $fileId);
     }
 }
