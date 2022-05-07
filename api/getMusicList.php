@@ -49,7 +49,7 @@ $x = 0;
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
     $collect_userList = $row['collect_userList'];
     $collect_userList_data = explode(',', $collect_userList);
-    if (in_array($username, $collect_userList_data)) {
+    if ($username && in_array($username, $collect_userList_data)) {
         $row['hasLike'] = 1; // 用户已收藏
     } else {
         $row['hasLike'] = 0; // 用户未收藏
