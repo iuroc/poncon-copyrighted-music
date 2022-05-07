@@ -385,6 +385,7 @@ function router(hash) {
         loadMusicList(typeKey, 0, 36)
 
     } else if (target == 'user') {
+        document.title = '我的收藏 - ' + webTitle
         if (!UserHasLogin && !ifLogin()) {
             location.hash = '/login/'
             return
