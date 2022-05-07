@@ -117,15 +117,14 @@
     transition: box-shadow .2s;
 }
 
-.page-musicList .musicList .musicList-item {
+.musicList .musicList-item {
     transition: background-color .5s;
 }
 
-.page-musicList .musicList .active {
+.musicList .active {
     background-color: var(--mainColor);
 }
 
-.page-musicList .musicList .active * {
+.musicList .active * {
     color: white !important;
 }
-

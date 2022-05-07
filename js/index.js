@@ -78,6 +78,37 @@ function getUserInfo(keyName) {
     }
 }
 
+function getListHtml(list) {
+    for (var i = 0, html = ''; i < list.length; i++) {
+        if (list[i].hasLike) {
+            var html_like = '<span class="addLike cursor cursor-warning text-warning" data-haslike="1">\
+                                <span class="bi bi bi-star-fill"></span>\
+                                <span class="like_num">' + list[i].like_num + '</span>\
+                            </span>'
+        } else {
+            var html_like = '<span class="addLike cursor cursor-warning" data-haslike="0">\
+                                <span class="bi bi bi-star"></span>\
+                                <span class="like_num">' + list[i].like_num + '</span>\
+                            </span>'
+        }
+        html += '<div class="col-xl-3 col-lg-4 col-md-6">\
+                    <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
+                        <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
+                        <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
+                        <div class="text-info small mb-2">#' + list[i].musicType + '</div>\
+                        <div class="text-nowrap overflow-hidden">\
+                            <span class="bi bi-headphones"></span>\
+                            <span class="listen_num mr-3 mr-sm-2">' + list[i].listen_num + '</span>\
+                            <span class="bi bi-filetype-mp3"></span>\
+                            <span class="fileSize mr-3 mr-sm-2">' + fileSize(list[i].size) + '</span>\
+                            ' + html_like + '\
+                        </div>\
+                    </div>\
+                </div>'
+    }
+    return html
+}
+
 /**
  * 加载音乐列表
  * @param {string} type 音乐类型
@@ -112,33 +143,7 @@ function loadMusicList(type, page, pageSize) {
                     $('.page-musicList .loadMore button').hide()
                     return
                 }
-                for (var i = 0, html = ''; i < list.length; i++) {
-                    if (list[i].hasLike) {
-                        var html_like = '<span class="addLike cursor cursor-warning text-warning" data-haslike="1">\
-                                            <span class="bi bi bi-star-fill"></span>\
-                                            <span class="like_num">' + list[i].like_num + '</span>\
-                                        </span>'
-                    } else {
-                        var html_like = '<span class="addLike cursor cursor-warning" data-haslike="0">\
-                                            <span class="bi bi bi-star"></span>\
-                                            <span class="like_num">' + list[i].like_num + '</span>\
-                                        </span>'
-                    }
-                    html += '<div class="col-xl-3 col-lg-4 col-md-6">\
-                                <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
-                                    <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
-                                    <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
-                                    <div class="text-info small mb-2">#' + list[i].musicType + '</div>\
-                                    <div class="text-nowrap overflow-hidden">\
-                                        <span class="bi bi-headphones"></span>\
-                                        <span class="listen_num mr-3 mr-sm-2">' + list[i].listen_num + '</span>\
-                                        <span class="bi bi-filetype-mp3"></span>\
-                                        <span class="fileSize mr-3 mr-sm-2">' + fileSize(list[i].size) + '</span>\
-                                        ' + html_like + '\
-                                    </div>\
-                                </div>\
-                            </div>'
-                }
+                var html = getListHtml(list)
                 $('.page-musicList .musicList').append(html)
                 $('.page-musicList .musicList .file-' + nowFileId).addClass('active')
                 $('.page-musicList .loadMore button').unbind().click(function () {
@@ -185,7 +190,7 @@ function loadMusicList(type, page, pageSize) {
                     })
                 })
             } else {
-
+                alert(data.msg)
             }
         }
     })
@@ -223,6 +228,75 @@ function router(hash) {
     // 判断目标界面标识 执行对应模块的载入事件
     if (target == 'home') {
         document.title = webTitle
+
+
+        // 加载热门音乐
+        $.ajax({
+            method: 'post',
+            url: baseUrl + 'api/getMusicList.php',
+            data: {
+                type: 'all',
+                page: 0,
+                pageSize: 36,
+                username: getUserInfo('username'),
+                password: getUserInfo('password')
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 200) {
+                    var list = data.result
+                    var html = getListHtml(list)
+                    $('.page-home .musicList').html(html)
+                    $('.page-home .musicList .file-' + nowFileId).addClass('active')
+                    $('.page-home .loadMore button').unbind().click(function () {
+                        loadMusicList(type, ++page, pageSize)
+                    })
+                    $('.page-home .musicList-item h5, .page-home .musicList-item .msg').unbind().click(function () {
+                        $('.page-home .musicList .active').removeClass('active')
+                        $(this).parent().addClass('active')
+                        var fileId = $(this).parent().data('fileid')
+                        playMusic(fileId, this)
+                    })
+                    $('.page-home .musicList-item span.addLike').unbind().click(function () {
+                        var hasLike = $(this).data('haslike')
+                        var fileId = $(this).parent().parent().data('fileid')
+                        var ele = $(this)
+                        request_addLike.abort()
+                        request_addLike = $.ajax({
+                            method: 'post',
+                            url: baseUrl + 'api/addLikeNum.php',
+                            data: {
+                                fileId: fileId,
+                                username: getUserInfo('username'),
+                                password: getUserInfo('password')
+                            },
+                            contentType: 'application/x-www-form-urlencoded',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 200) {
+                                    if (data.type) {
+                                        ele.removeClass('text-warning')
+                                        ele.find('.bi-star-fill').removeClass('bi-star-fill').addClass('bi-star')
+                                        var ele2 = ele.find('.like_num')
+                                        ele2.html(parseInt(ele2.text()) - 1)
+                                    } else {
+                                        ele.addClass('text-warning')
+                                        ele.find('.bi-star').removeClass('bi-star').addClass('bi-star-fill')
+                                        var ele2 = ele.find('.like_num')
+                                        ele2.html(parseInt(ele2.text()) + 1)
+                                    }
+                                } else {
+                                    alert(data.msg)
+                                }
+                            }
+                        })
+                    })
+                } else {
+                    alert(data.msg)
+                }
+            }
+        })
         if (neverLoad_getTypeList) {
             return
         }
@@ -252,6 +326,8 @@ function router(hash) {
                 })
             }
         })
+
+
     } else if (target == 'about') {
         document.title = '关于 - ' + webTitle
         // 界面载入事件
