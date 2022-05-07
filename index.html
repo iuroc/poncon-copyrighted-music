@@ -8,7 +8,6 @@
     <title>无忧音乐网</title>
     <link rel="stylesheet" href="https://cdn.staticfile.org/bootstrap/4.6.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="css/index.css">
     <style>
         :root {
             --mainColor: #525288;
@@ -24,7 +23,16 @@
     <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
     <link rel="stylesheet" href="css/APlayer.min.css">
     <script src="js/APlayer.min.js"></script>
-    <script src="js/index.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("<link>").attr({
+                rel: "stylesheet",
+                type: "text/css",
+                href: "css/index.css?_=" + new Date().getTime()
+            }).appendTo("head")
+            $.getScript('js/index.js')
+        })
+    </script>
 </head>
 
 <body style="display: none;" class="user-select-none text-break">
@@ -58,14 +66,15 @@
             </ul>
         </div>
     </nav>
-    <div class="container py-sm-3 py-md-4 py-2" style="margin-top: 65px; margin-bottom: 100px;">
+    <div class="container py-sm-3 py-3" style="margin-top: 65px; margin-bottom: 80px;">
         <div class="page-home page-oyp">
             <div class="row musicTypeList"></div>
         </div>
         <div class="page-musicList page-oyp">
             <nav class="mb-4">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#/home/" onclick="location.hash = '/home/'; return false;">主页</a></li>
+                    <li class="breadcrumb-item"><a href="#/home/"
+                            onclick="location.hash = '/home/'; return false;">主页</a></li>
                     <li class="breadcrumb-item active"></li>
                 </ol>
             </nav>
@@ -112,7 +121,8 @@
                             </div>
                         </div>
                         <div class="msg text-center mb-4">
-                            没有账号？<a onclick="location.hash = '/login/register/'">点此注册</a>
+                            没有账号？<a href="'#/login/register/'"
+                                onclick="location.hash = '/login/register/'; return false;">点此注册</a>
                         </div>
                     </div>
                     <div class="page-sub-register page-oyp">
@@ -163,7 +173,7 @@
                             </div>
                         </div>
                         <div class="msg text-center mb-4">
-                            已有账号？<a onclick="location.hash = '/login/'">点此登录</a>
+                            已有账号？<a href="'#/login/'" onclick="location.hash = '/login/'; return false;">点此登录</a>
                         </div>
                     </div>
                 </div>
