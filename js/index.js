@@ -53,7 +53,7 @@ function playMusic(fileId, ele) {
                         artist: '无忧音乐网',
                         url: data.result.downloadUrl,
                         cover: 'img/music.jpg',
-                        theme: '#17a2b8'
+                        theme: '#525288'
                     }]
                 })
                 ap.play()
