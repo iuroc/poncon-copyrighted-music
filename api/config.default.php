@@ -5,6 +5,7 @@
  * 配置文件
  */
 header('Content-type: application/json');
+header('Access-Control-Allow-Origin: *');
 $config = array(
     'mysql' => array(
         'host' => '',
@@ -24,7 +25,8 @@ $config = array(
         'smtp_port' => 994, // SMTP端口
         'sendFrom' => '', // 发件人邮箱
         'sendFromName' => '鹏创云盘' // 发件人名称
-    )
+    ),
+    'authorization' => ''
 );
 
 function defaultGetData($key, $value)

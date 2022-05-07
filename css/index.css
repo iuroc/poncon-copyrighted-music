@@ -1,0 +1,23 @@
+.btn-mainColor {
+    color: #fff;
+    background-color: var(--mainColor);
+    border-color: var(--mainColor);
+}
+
+.btn-mainColor:hover {
+    color: #fff;
+    background-color: #303069;
+    border-color: #303069;
+}
+
+.btn-mainColor:focus {
+    box-shadow: 0 0 0 0.2rem rgb(82 82 136 / 25%);
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: var(--mainColor);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(82 82 136 / 25%);
+}
