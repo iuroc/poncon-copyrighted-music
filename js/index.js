@@ -8,6 +8,8 @@ if (location.hostname == 'localhost') {
 var webTitle = '无忧音乐网 - 海量无版权音乐共享'
 var userLoginDataKeyName = 'copyrighted_music_UserLoginData'
 var UserHasLogin = 0 // 用户已经登录？
+var nowLoadMusicType = '' // 当前加载的音乐列表类型
+var nowFileId = '' // 当前播放音乐的文件ID
 
 var request_updateFileList
     = request_getFileInfo
@@ -25,6 +27,7 @@ var ap
  * @param {string} fileId 音乐文件ID·
  */
 function playMusic(fileId) {
+    nowFileId = fileId
     request_playMusic.abort()
     request_playMusic = $.ajax({
         method: 'post',
@@ -91,8 +94,8 @@ function loadMusicList(type, page, pageSize) {
                 }
                 for (var i = 0, html = ''; i < list.length; i++) {
                     html += '<div class="col-xl-3 col-lg-4 col-md-6">\
-                                <div class="p-3 rounded shadow border mb-4 musicList-item" data-fileid="' + list[i].fileId + '">\
-                                    <h5 class="mb-2 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
+                                <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
+                                    <h5 class="pb-2 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
                                     <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
                                     <div class="text-nowrap overflow-hidden">\
                                         <span class="bi bi-headphones"></span>\
@@ -108,10 +111,13 @@ function loadMusicList(type, page, pageSize) {
                             </div>'
                 }
                 $('.page-musicList .musicList').append(html)
+                $('.page-musicList .musicList .file-' + nowFileId).addClass('active')
                 $('.page-musicList .loadMore button').unbind().click(function () {
                     loadMusicList(type, ++page, pageSize)
                 })
                 $('.page-musicList .musicList-item h5, .page-musicList .musicList-item .msg').unbind().click(function () {
+                    $('.page-musicList .musicList .active').removeClass('active')
+                    $(this).parent().addClass('active')
                     var fileId = $(this).parent().data('fileid')
                     playMusic(fileId)
                 })
@@ -205,7 +211,11 @@ function router(hash) {
         var typeName = decodeURIComponent(hash[3])
         document.title = typeName + ' - 音乐列表 - ' + webTitle
         $('.page-musicList .breadcrumb .active').html(typeName + ' - 音乐列表')
-        loadMusicList(typeKey, 0, 36)
+        if (nowLoadMusicType != typeName) {
+            nowLoadMusicType = typeName
+            loadMusicList(typeKey, 0, 36)
+        }
+        
     } else {
         location.hash = '/home/'
     }

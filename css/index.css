@@ -116,3 +116,12 @@
     box-shadow: 0 0rem 1rem rgba(58, 124, 199, 0.616) !important;
     transition: box-shadow .2s;
 }
+
+
+.page-musicList .musicList .active {
+    background-color: var(--mainColor);
+}
+
+.page-musicList .musicList .active * {
+    color: white !important;
+}
