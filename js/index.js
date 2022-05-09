@@ -2,7 +2,7 @@
 
 var baseUrl = ''
 if (location.hostname == 'localhost') {
-    var baseUrl = 'http://app.ouyangpeng.top/app/poncon-copyrighted-music/'
+    var baseUrl = 'http://web.app.ouyangpeng.top/poncon-copyrighted-music/'
 }
 
 var webTitle = '无忧音乐网 - 海量无版权音乐共享'
@@ -189,7 +189,7 @@ function loadUserLikeList(page, pageSize) {
     })
     $.ajax({
         method: 'post',
-        url: 'api/getUserLikeList.php',
+        url: baseUrl + 'api/getUserLikeList.php',
         data: {
             page: page,
             pageSize: pageSize,
@@ -697,6 +697,12 @@ $(document).ready(function () {
             $('.page-search input.keyword').blur()
             //模拟点击搜索按钮
             $('.page-search button.search').click()
+        }
+    })
+    $(".navbar-collapse li").click(function () {
+        var e = $(".navbar button.navbar-toggler")
+        if (e.css("display") == "block") {
+            $(".navbar button.navbar-toggler").click()
         }
     })
 })
