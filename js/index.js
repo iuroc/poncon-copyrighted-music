@@ -286,6 +286,7 @@ function addClick(target) {
  * @param {string} hash 页面的hash，如#/home/
  */
 function router(hash) {
+    scrollTo(0, 0)
     // 获取目标界面标识
     hash = hash.split('/')
     var target = hash[1]
