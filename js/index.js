@@ -107,7 +107,7 @@ function playMusic(index, ele) {
         ele_listen_num = $(now_ele).find('span.listen_num')
         ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
         $('.musicList .active').removeClass('active')
-        $(eles[index]).addClass('active')
+        $('.musicList .file-' + nowFileId).addClass('active')
         console.log($(eles[index]))
         nowPlayIndex = index
         var fileId = $(eles[index]).data('fileid')
