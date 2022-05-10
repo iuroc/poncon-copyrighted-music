@@ -24,7 +24,7 @@ $config = array(
         'smtp_secure' => 'ssl', // 连接加密方法
         'smtp_port' => 994, // SMTP端口
         'sendFrom' => '', // 发件人邮箱
-        'sendFromName' => '鹏创云盘' // 发件人名称
+        'sendFromName' => '无忧音乐网' // 发件人名称
     ),
     'authorization' => ''
 );

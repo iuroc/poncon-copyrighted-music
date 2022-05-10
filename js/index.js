@@ -26,9 +26,9 @@ var ap
 
 /**
  * 加载音乐播放器，播放音乐
- * @param {string} fileId 音乐文件ID·
+ * @param {string} fileId 音乐文件ID
  */
-function playMusic(fileId, ele) {
+function playMusic_v1(fileId, ele) {
     if (nowFileId == fileId) {
         return
     }
@@ -62,6 +62,51 @@ function playMusic(fileId, ele) {
                 alert(data.msg)
             }
         }
+    })
+}
+
+/**
+ * 播放音乐，支持播放列表
+ * @param {int} index 当前点击的卡片在当前播放列表中的序号
+ * @param {object} ele 当前播放列表的DOM对象 .musicList
+ */
+function playMusic(index, ele) {
+    var eles = ele.find('.musicList-item')
+    var audio = []
+    for (var i = 0; i < eles.length; i++) {
+        var ele_item = $(eles[i])
+        audio.push({
+            name: ele_item.find('h5').text(),
+            artist: '无忧音乐网',
+            url: baseUrl + 'api/playMusic.php?fileId=' + ele_item.data('fileid'),
+            cover: 'img/music.jpg',
+            theme: '#525288'
+        })
+    }
+    var now_ele = ele.find('.musicList-item')[index]
+    ele_listen_num = $(now_ele).find('span.listen_num')
+    ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
+    $('.aplayerBox, .goDownloadMusicGood').show().css('position', 'fixed')
+    ap = new APlayer({
+        listFolded: $('.aplayer-list').css('height') == '0px' || !$('.aplayer-list').css('height'),
+        container: document.getElementById('aplayer'),
+        audio: audio
+    })
+    ap.list.switch(index)
+    ap.play()
+    ap.on('listswitch', function (e) {
+        var index = e.index
+        var now_ele = ele.find('.musicList-item')[index]
+        ele_listen_num = $(now_ele).find('span.listen_num')
+        ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
+        $('.musicList .active').removeClass('active')
+        $(eles[index]).addClass('active')
+    })
+    ap.on('listshow', function () {
+        $('.container-main').css('margin-bottom', '205px')
+    })
+    ap.on('listhide', function () {
+        $('.container-main').css('margin-bottom', '80px')
     })
 }
 
@@ -225,8 +270,9 @@ function addClick(target) {
     $('.page-' + target + ' .musicList-item h5, .page-' + target + ' .musicList-item .msg').unbind().click(function () {
         $('.page-' + target + ' .musicList .active').removeClass('active')
         $(this).parent().addClass('active')
-        var fileId = $(this).parent().data('fileid')
-        playMusic(fileId, this)
+        // var fileId = $(this).parent().data('fileid')
+        var index = $(this).parent().parent().index()
+        playMusic(index, $('.page-' + target + ' .musicList'))
     })
     $('.page-' + target + ' .musicList-item span.addLike').unbind().click(function () {
         if (!UserHasLogin) {
