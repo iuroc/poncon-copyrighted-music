@@ -111,7 +111,7 @@ function playMusic(index, ele) {
         ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
         $('.musicList .active').removeClass('active')
         $('.musicList .file-' + nowFileId).addClass('active')
-        console.log($(eles[index]))
+        // console.log($(eles[index]))
     })
     ap.on('listshow', function () {
         $('.container-main').css('margin-bottom', '205px')
@@ -570,7 +570,7 @@ function searchMusic(keyword, page, pageSize) {
 }
 
 $(document).ready(function () {
-    console.log('%cHello Poncon 2022-05-07', 'color: orange; border: 2px solid orange; padding: 2px 4px; font-size: 16px;')
+    // console.log('%cHello Poncon 2022-05-07', 'color: orange; border: 2px solid orange; padding: 2px 4px; font-size: 16px;')
     if (!location.hash.split('/')[1]) {
         history.replaceState({}, null, '#/home/')
     }
@@ -630,7 +630,7 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.code == 200) {
                     location.hash = '/login/'
-                    console.log(username, password)
+                    // console.log(username, password)
                     $('.page-login .page-sub-login .input-username').val(username)
                     $('.page-login .page-sub-login .input-password').val(password)
                 } else {
