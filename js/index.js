@@ -10,6 +10,7 @@ var userLoginDataKeyName = 'copyrighted_music_UserLoginData'
 var UserHasLogin = 0 // 用户已经登录？
 // var nowLoadMusicType = '' // 当前加载的音乐列表类型
 var nowFileId = '' // 当前播放音乐的文件ID
+var nowPlayIndex = 0 // 当前播放的音乐在列表中的序号
 
 var request_updateFileList
     = request_getFileInfo
@@ -73,6 +74,7 @@ function playMusic_v1(fileId, ele) {
 function playMusic(index, ele) {
     var eles = ele.find('.musicList-item')
     var audio = []
+    nowPlayIndex = index
     for (var i = 0; i < eles.length; i++) {
         var ele_item = $(eles[i])
         audio.push({
@@ -101,6 +103,7 @@ function playMusic(index, ele) {
         ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
         $('.musicList .active').removeClass('active')
         $(eles[index]).addClass('active')
+        nowPlayIndex = index
     })
     ap.on('listshow', function () {
         $('.container-main').css('margin-bottom', '205px')
@@ -722,7 +725,7 @@ $(document).ready(function () {
     })
     $('span.goDownloadMusicGood').click(function () {
         if (UserHasLogin) {
-            var downloadUrl = ap.options.audio[0].url
+            var downloadUrl = ap.options.audio[nowPlayIndex].url
             $('.download_iframes').append('<iframe src="' + downloadUrl + '"></iframe>')
             $('.modal-msg').modal('show')
         } else {
