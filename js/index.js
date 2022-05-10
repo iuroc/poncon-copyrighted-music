@@ -103,15 +103,15 @@ function playMusic(index, ele) {
     ap.play()
     ap.on('listswitch', function (e) {
         var index = e.index
+        nowPlayIndex = index
+        var fileId = $(eles[index]).data('fileid')
+        nowFileId = fileId
         var now_ele = ele.find('.musicList-item')[index]
         ele_listen_num = $(now_ele).find('span.listen_num')
         ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
         $('.musicList .active').removeClass('active')
         $('.musicList .file-' + nowFileId).addClass('active')
         console.log($(eles[index]))
-        nowPlayIndex = index
-        var fileId = $(eles[index]).data('fileid')
-        nowFileId = fileId
     })
     ap.on('listshow', function () {
         $('.container-main').css('margin-bottom', '205px')
