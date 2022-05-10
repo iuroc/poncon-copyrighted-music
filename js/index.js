@@ -74,6 +74,11 @@ function playMusic_v1(fileId, ele) {
 function playMusic(index, ele) {
     var eles = ele.find('.musicList-item')
     var audio = []
+    var fileId = $(eles[index]).data('fileid')
+    if (nowFileId == fileId) {
+        return
+    }
+    nowFileId = fileId
     nowPlayIndex = index
     for (var i = 0; i < eles.length; i++) {
         var ele_item = $(eles[i])
@@ -103,7 +108,10 @@ function playMusic(index, ele) {
         ele_listen_num.html(parseInt(ele_listen_num.text()) + 1)
         $('.musicList .active').removeClass('active')
         $(eles[index]).addClass('active')
+        console.log($(eles[index]))
         nowPlayIndex = index
+        var fileId = $(eles[index]).data('fileid')
+        nowFileId = fileId
     })
     ap.on('listshow', function () {
         $('.container-main').css('margin-bottom', '205px')
