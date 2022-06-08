@@ -77,4 +77,3 @@ function get_authorization($config)
     return $data['authorization'];
 }
 
-echo $config['123pan']['authorization'];
