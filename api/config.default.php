@@ -67,7 +67,7 @@ function get_authorization($config)
         );
         $context = stream_context_create($options);
         $result = file_get_contents('https://www.123pan.com/b/api/user/sign_in', false, $context);
-        $authorization = json_decode($result, true)['data']['token'];
+        $authorization = 'Bearer ' . json_decode($result, true)['data']['token'];
         if ($authorization) {
             $data['authorization'] = $authorization;
             $data['update_time'] = time();
