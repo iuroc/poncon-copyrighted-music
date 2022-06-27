@@ -148,8 +148,8 @@ function getListHtml(list) {
                                 <span class="like_num">' + list[i].like_num + '</span>\
                             </span>'
         }
-        html += '<div class="col-xl-3 col-lg-4 col-md-6">\
-                    <div class="p-3 rounded shadow border mb-4 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
+        html += '<div class="col-xl-3 col-lg-4 col-md-6 mb-4">\
+                    <div class="p-3 rounded shadow border h-100 musicList-item file-' + list[i].fileId + '" data-fileid="' + list[i].fileId + '">\
                         <h5 class="pb-2 mb-0 text-mainColor cursor">' + list[i].fileName.replace(/(.*).mp3$/, '$1') + '</h5>\
                         <div class="msg text-muted cursor small mb-2">' + list[i].msg + '</div>\
                         <div class="text-info small mb-2">#' + list[i].musicType + '</div>\
@@ -395,8 +395,8 @@ function router(hash) {
                 neverLoad_getTypeList = 1
                 var html = ''
                 for (var i = 0; i < data.length; i++) {
-                    html += '<div class="col-xl-3 col-lg-4 col-6">\
-                                <div data-index="' + i + '" class="rounded shadow border p-3 mb-4 border-mainColor text-center musicTypeList-item ' + (i == 0 ? 'musicTypeList-item-active' : '') + '">\
+                    html += '<div class="col-xl-3 col-lg-4 col-6 mb-4">\
+                                <div data-index="' + i + '" class="rounded shadow border p-3 h-100 border-mainColor text-center musicTypeList-item ' + (i == 0 ? 'musicTypeList-item-active' : '') + '">\
                                     <div class="overflow-hidden">\
                                         <h5 class="text-mainColor mb-0 text-nowrap text-truncate">' + data[i][1] + '</h5>\
                                         <div class="msg text-nowrap text-truncate">' + data[i][0] + '</div>\
