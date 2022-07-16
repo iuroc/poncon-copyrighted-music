@@ -32,7 +32,7 @@ if ($username && $password) {
 
 
 if ($type == 'all') {
-    $sql = "SELECT * FROM `copyrighted_music` ORDER BY `like_num` DESC LIMIT $pageSize OFFSET $offset;";
+    $sql = "SELECT * FROM `copyrighted_music` ORDER BY `listen_num` DESC LIMIT $pageSize OFFSET $offset;";
 } else {
     $sql = "SELECT * FROM `copyrighted_music` WHERE `musicType` LIKE '%$type%' ORDER BY `listen_num` DESC LIMIT $pageSize OFFSET $offset;";
 }
