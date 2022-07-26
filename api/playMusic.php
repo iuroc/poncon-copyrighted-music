@@ -53,7 +53,7 @@ function addListenNum($conn, $listen_num, $fileId)
 
 // 判断数据库的下载连接是否过期
 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-    $row['downloadUrl'] = 'http://123pan.ouyangpeng.top/FreePD/' . $row['fileName'];
+    $row['downloadUrl'] = 'https://123pan.ouyangpeng.top/FreePD/' . $row['fileName'];
     echo json_encode(array(
         'code' => 200,
         'msg' => '查询成功(缓存)',
